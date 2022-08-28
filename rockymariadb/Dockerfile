@@ -6,6 +6,10 @@ RUN microdnf upgrade --refresh -y; \
     microdnf update -y; \
     microdnf install MariaDB-server MariaDB-client -y; \
     microdnf clean all
+RUN mkdir /docker-entrypoint-initdb.d
+COPY healthcheck.sh /usr/local/bin/healthcheck.sh
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT [ "docker-entrypoint.sh" ]
 VOLUME /var/lib/mysql
 EXPOSE 3306
 CMD ["mariadbd"]
