@@ -1,0 +1,7 @@
+# MariaDB 10.6 RedHat repository list - created 2022-08-28 08:33 UTC
+# https://mariadb.org/download/
+[mariadb]
+name = MariaDB
+baseurl = https://mirror.safe-con.dk/mariadb/yum/10.6/rhel9-aarch64
+gpgkey=https://mirror.safe-con.dk/mariadb/yum/RPM-GPG-KEY-MariaDB
+gpgcheck=1
