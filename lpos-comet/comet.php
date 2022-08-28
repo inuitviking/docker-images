@@ -1,16 +1,28 @@
 <?php
+// Be sure we can have all the necessary libraries required.
 require_once 'vendor/autoload.php';
+declare(strict_types=1);
 
+$path			= ltrim($_SERVER['REQUEST_URI'],'/');
+$urlParams		= ltrim(substr($path, strpos($path, '?')), '?');
+$urlParams		= explode('&', $urlParams);
+if (str_contains($path, "?")) {
+	$path = substr($path, 0, strpos($path, "?"));
+}
+$elements	= preg_split('/ [\/|?&] /', $path);
+
+// Define the app
 $app = new Comet\Comet([
-	'host' => '192.168.1.222',
+	'host' => '0.0.0.0',
 	'port' => 8080,
 ]);
 
-$app->get('/bpm',
+// Setup routing for /bpm
+$app->get($path,
 	function ($request, $response) {
 		$file = 'mqtt.csv';
 		$f = fopen($file, 'r');
-		$data = [];
+		$data = null;
 		while (($row = fgetcsv($f)) !== false) {
 			$data[] = $row;
 		}
@@ -19,4 +31,12 @@ $app->get('/bpm',
 			->with($data);
 	});
 
+// Start the app
 $app->run();
+
+
+function GetData (string $path) {
+	$data = null;
+	
+	return $data;
+}
