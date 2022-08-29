@@ -42,16 +42,7 @@ ENTRYPOINT [ "docker-entrypoint.sh" ]
 RUN mkdir -p /var/lib/mysql /var/run/mysqld; \
     chown -R mysql:mysql /var/lib/mysql /var/run/mysqld; \
     # ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
-    chmod 777 /var/run/mysqld; \
-    # comment out a few problematic configuration values
-    find /etc/mysql/ -name '*.cnf' -print0 \
-        | xargs -0 grep -lZE '^(bind-address|log|user\s)' \
-        | xargs -rt -0 sed -Ei 's/^(bind-address|log|user\s)/#&/'; \
-    # Issue #327 Correct order of reading directories /etc/mysql/mariadb.conf.d before /etc/mysql/conf.d (mount-point per documentation)
-    if [ ! -L /etc/mysql/my.cnf ]; then sed -i -e '/includedir/i[mariadb]\nskip-host-cache\nskip-name-resolve\n' /etc/mysql/my.cnf; \
-    # 10.5+
-     else sed -i -e '/includedir/ {N;s/\(.*\)\n\(.*\)/[mariadbd]\nskip-host-cache\nskip-name-resolve\n\n\2\n\1/}' \
-         /etc/mysql/mariadb.cnf; fi
+    chmod 777 /var/run/mysqld; 
 # Define the database volume
 VOLUME /var/lib/mysql
 # Expose the standard port

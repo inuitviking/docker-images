@@ -213,6 +213,8 @@ docker_setup_env() {
 	_mariadb_file_env 'MYSQL_PASSWORD'
 	_mariadb_file_env 'MYSQL_ROOT_PASSWORD'
 
+	echo ${MYSQL_USER}
+
 	# set MARIADB_ from MYSQL_ when it is unset and then make them the same value
 	: "${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD:=${MYSQL_ALLOW_EMPTY_PASSWORD:-}}"
 	export MYSQL_ALLOW_EMPTY_PASSWORD="$MARIADB_ALLOW_EMPTY_ROOT_PASSWORD" MARIADB_ALLOW_EMPTY_ROOT_PASSWORD
