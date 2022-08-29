@@ -325,8 +325,10 @@ docker_setup_db() {
 		SET @@SESSION.SQL_LOG_BIN=0;
                 -- we need the SQL_MODE NO_BACKSLASH_ESCAPES mode to be clear for the password to be set
 		SET @@SESSION.SQL_MODE=REPLACE(@@SESSION.SQL_MODE, 'NO_BACKSLASH_ESCAPES', '');
+
 		DROP USER IF EXISTS root@'127.0.0.1', root@'::1';
 		EXECUTE IMMEDIATE CONCAT('DROP USER IF EXISTS root@\'', @@hostname,'\'');
+
 		SET PASSWORD FOR 'root'@'localhost'=PASSWORD('${rootPasswordEscaped}') ;
 		${rootCreate}
 		${mysqlAtLocalhost}
@@ -460,6 +462,12 @@ _main() {
 		docker_setup_env "$@"
 		docker_create_db_directories
 
+		# If container is started as root user, restart as dedicated mysql user
+		if [ "$(id -u)" = "0" ]; then
+			mysql_note "Switching to dedicated user 'mysql'"
+			exec gosu mysql "${BASH_SOURCE[0]}" "$@"
+		fi
+
 		# there's no database, so it needs to be initialized
 		if [ -z "$DATABASE_ALREADY_EXISTS" ]; then
 			docker_verify_minimum_env
@@ -496,3 +504,4 @@ _main() {
 if ! _is_sourced; then
 	_main "$@"
 fi
+
