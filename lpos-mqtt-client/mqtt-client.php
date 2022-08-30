@@ -2,11 +2,7 @@
 
 echo "Sleep before doing anything. We want the other services to be ready.\n";
 for ($i = 0; $i < 10; $i++) {
-	if ($i == 10) {
-		echo ".\n";
-	} else {
-		echo ".";
-	}
+	echo $i."\n";
 	sleep(1);
 }
 
@@ -94,11 +90,10 @@ function insertBPM ($db, string $topic, string $message): void {
 	$insert = sprintf("INSERT INTO bpm (bed, bpm) VALUES (%s, %s)", $topic[3], $message);
 	$update = sprintf("UPDATE bpm SET bpm=%s WHERE bed = %s", $message, $topic[3]);
 	$result = $db->query($select);
-	$result = mysqli_query($db, $select);
 
-	print_r($result);
+	print_r(mysqli_num_rows($result));
 
-	if ($result) {
+	if (mysqli_num_rows($result) >= 1) {
 		echo $db->query($insert);
 		echo mysqli_query($db, $insert);
 	}else {
