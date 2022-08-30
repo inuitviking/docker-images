@@ -29,13 +29,18 @@ use PhpMqtt\Client\Exceptions\RepositoryException;
 // *************
 /*
  * Servers:
- * - 192.168.80.2
- * - 192.168.95.115
- * - 192.168.80.17
- * - 192.168.1.222
- * - 10.135.16.54
+ * - Skúlaheim
+ *   - 192.168.80.2
+ *   - 192.168.80.12
+ *   - 192.168.80.17
+ * - Hotspot
+ *   - 192.168.95.115
+ * - Heima
+ *   - 192.168.1.222
+ * - Skúli
+ *   - 10.135.16.54
  */
-$server		= '10.135.16.54';
+$server		= '192.168.80.12';
 $port		= 8883;
 $clientId	= 'infoscreen';
 $clientPass	= '5k1nnyL4773';
