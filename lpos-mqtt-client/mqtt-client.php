@@ -1,10 +1,16 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 echo "Sleep before doing anything. We want the other services to be ready.\n";
-for ($i = 0; $i < 10; $i++) {
+for ($i = 1; $i <= 5; $i++) {
 	echo $i."\n";
 	sleep(1);
 }
+echo "Ready!\n";
+
 
 require_once 'vendor/autoload.php';
 require_once 'classes/Database.php';
@@ -66,13 +72,9 @@ try {
 		echo "Topic: ". $topic[3] . "\n";
 		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[3] . "'", 1);
 		if ($bpm == "" || !$bpm) {
-			$bpmArray = [
-				'bed' => $topic[3],
-				'bpm' => $message
-			];
-			$bpmCrud->Create($bpmArray);
+			$bpmCrud->Create(['bed' => $topic[3],'bpm' => $message]) . "\n";
 		} else {
-			$bpmCrud->Update(['bpm' => $message], "bed = '".$topic[3]."'");
+			$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[3]."'") . "\n";
 		}
 
 	}, 0);																								// Set the QoS to 0
@@ -89,32 +91,4 @@ try {
 		 MqttClientException $e) {
 	echo $e;																											// Echo the error
 	exit(0);																											// Exit the program with exit code 0
-}
-
-
-function insertBPM (string $topic, string $message): void {
-	$topic = explode('/', $topic);
-	$topic = array_filter($topic);
-
-	print_r($topic);
-
-	$select = sprintf("SELECT bed FROM bpm WHERE bed = '%s'", $topic[3]);
-	$insert = sprintf("INSERT INTO bpm (bed, bpm) VALUES ('%s', '%s')", $topic[3], $message);
-	$update = sprintf("UPDATE bpm SET bpm='%s' WHERE bed = '%s'", $message, $topic[3]);
-
-	echo $select."\n";
-	echo $insert."\n";
-	echo $update."\n";
-
-	$result = $db->query($select);
-
-	print_r(mysqli_num_rows($result));
-
-	if (mysqli_num_rows($result) >= 1) {
-		echo $db->query($insert);
-		echo mysqli_query($db, $insert);
-	}else {
-		echo $db->query($update);
-		echo mysqli_query($db, $update);
-	}
 }
