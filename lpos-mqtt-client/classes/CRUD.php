@@ -33,7 +33,7 @@ class Crud {
 	 * @return integer
 	 */
 	public function Create(array $data): int{
-		$sql = $this->db->prepareInsert($this->table, $data);
+		$sql = $this->db->prepareInsert($data, $this->table);
 
 		if (false === $sql->execute()){
 			throw new \RuntimeException($sql->errorInfo(), $sql->errorCode());
@@ -73,7 +73,6 @@ class Crud {
 	 */
 	public function Update(array $data, array|string $where): int{
 		$sql = $this->db->prepareUpdate($this->table, $data, $where);
-
 		if (false === $sql->execute()){
 			throw new \RuntimeException($sql->errorInfo(), $sql->errorCode());
 		}
