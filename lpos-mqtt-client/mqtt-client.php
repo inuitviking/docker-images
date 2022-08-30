@@ -94,12 +94,15 @@ function insertBPM ($db, string $topic, string $message): void {
 	$insert = sprintf("INSERT INTO bpm (bed, bpm) VALUES (%s, %s)", $topic[3], $message);
 	$update = sprintf("UPDATE bpm SET bpm=%s WHERE bed = %s", $message, $topic[3]);
 	$result = $db->query($select);
+	$result = mysqli_query($db, $select);
 
 	print_r($result);
 
 	if ($result) {
 		echo $db->query($insert);
+		echo mysqli_query($db, $insert);
 	}else {
 		echo $db->query($update);
+		echo mysqli_query($db, $update);
 	}
 }
