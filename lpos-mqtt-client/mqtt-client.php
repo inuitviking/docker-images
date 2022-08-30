@@ -35,10 +35,11 @@ $clientPass	= '5k1nnyL4773';
 $dbserver	= $server;
 $dbuser		= 'Ahmoo';
 $dbpass		= '?&1Q%R>y[lHp,W6KABZy?%l)v#_^';
-$dbdb		= 'infoscreen';
+$db		= 'infoscreen';
 
-$db = mysqli_connect($server ,$dbuser, $dbpass, $dbdb)
- or die('Error connecting to MySQL server.');
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli($server ,$dbuser, $dbpass, $db)
+	or die('Error connecting to MySQL server.');
 
 // ***********
 // * PROGRAM *
@@ -54,11 +55,10 @@ try {
 		->setTlsCertificateAuthorityFile("certs/ca-root-cert.crt");				// Root certificate for the client and server certificate;					// Set client certificate key
 
 	$mqtt->connect($connectionSettings, true);															// Connect to the MQTT broker with the above connection settings and with a clean session.
-	$mqtt->subscribe('hospital/#', function ($topic, $message) {												// Recursively subscribe to hospital/
-		file_put_contents('mqtddt.csv', "$topic,$message", LOCK_EX);
+	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($db) {												// Recursively subscribe to hospital/
+		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
 		//		echo "\{$topic:$message}";
-		$sql = "INSERT INTO table_name (PersonID, FirstName, LastName, Email, City) VALUES ('1', 'Adam', 'Best', 'abest@mac.com', 'Brisbane');";
-		mysqli_query($db, $sql);
+		insertBPM($db, $topic, $message);
 
 	}, 0);																								// Set the QoS to 0
 
@@ -74,4 +74,19 @@ try {
 		 MqttClientException $e) {
 	echo $e;																											// Echo the error
 	exit(0);																											// Exit the program with exit code 0
+}
+
+
+function insertBPM ($db, string $topic, string $payload): void {
+	$topic = explode('/', $topic);
+	$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
+	$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $payload)";
+	$update = "UPDATE bpm SET bpm=$payload WHERE bed = ${topic[2]}";
+	$result = $db->query($select);
+
+	if ($result) {
+		$db->query($insert);
+	}else {
+		$db->query($update);
+	}
 }
