@@ -58,7 +58,21 @@ try {
 	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($db) {												// Recursively subscribe to hospital/
 		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
 		//		echo "\{$topic:$message}";
-		insertBPM($db, $topic, $message);
+
+		$topic = explode('/', $topic);
+		$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
+		$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $message)";
+		$update = "UPDATE bpm SET bpm=$message WHERE bed = ${topic[2]}";
+		$result = $db->query($select);
+
+		echo $result;
+
+		if ($result) {
+			echo $db->query($insert);
+		}else {
+			echo $db->query($update);
+		}
+
 
 	}, 0);																								// Set the QoS to 0
 
@@ -77,16 +91,16 @@ try {
 }
 
 
-function insertBPM ($db, string $topic, string $payload): void {
-	$topic = explode('/', $topic);
-	$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
-	$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $payload)";
-	$update = "UPDATE bpm SET bpm=$payload WHERE bed = ${topic[2]}";
-	$result = $db->query($select);
-
-	if ($result) {
-		$db->query($insert);
-	}else {
-		$db->query($update);
-	}
-}
+//function insertBPM ($db, string $topic, string $payload): void {
+//	$topic = explode('/', $topic);
+//	$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
+//	$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $payload)";
+//	$update = "UPDATE bpm SET bpm=$payload WHERE bed = ${topic[2]}";
+//	$result = $db->query($select);
+//
+//	if ($result) {
+//		$db->query($insert);
+//	}else {
+//		$db->query($update);
+//	}
+//}
