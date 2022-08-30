@@ -1,6 +1,6 @@
 <?php
 
-echo "Sleep before doing anything. We want the other services to be ready.";
+echo "Sleep before doing anything. We want the other services to be ready.\n";
 sleep(10);
 
 require_once 'vendor/autoload.php';
@@ -20,17 +20,18 @@ use PhpMqtt\Client\Exceptions\RepositoryException;
 // *************
 // * VARIABLES *
 // *************
-//$server		= '192.168.80.2';
-//$server		= '192.168.95.115';
+/*
+ * Servers:
+ * - 192.168.80.2
+ * - 192.168.95.115
+ * - 192.168.80.17
+ * - 192.168.1.222
+ * - 10.135.16.54
+ */
 $server		= '10.135.16.54';
-//$server		= '192.168.80.17';
-//$server		= '192.168.1.222';
 $port		= 8883;
 $clientId	= 'infoscreen';
 $clientPass	= '5k1nnyL4773';
-//$clientIP 	= '192.168.95.115';
-//$clientIP	= '192.168.80.43';
-//$clientIP	= '10.135.16.162';
 
 $dbserver	= $server;
 $dbuser		= 'Ahmoo';
@@ -60,6 +61,9 @@ try {
 		//		echo "\{$topic:$message}";
 
 		$topic = explode('/', $topic);
+
+		print_r($topic);
+
 		$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
 		$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $message)";
 		$update = "UPDATE bpm SET bpm=$message WHERE bed = ${topic[2]}";
