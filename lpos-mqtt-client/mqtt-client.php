@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 echo "Sleep before doing anything. We want the other services to be ready.\n";
 for ($i = 1; $i <= 5; $i++) {
 	echo $i."\n";

@@ -1,7 +1,6 @@
 <?php
 // Be sure we can have all the necessary libraries required.
 require_once 'vendor/autoload.php';
-declare(strict_types=1);
 
 $path			= ltrim($_SERVER['REQUEST_URI'],'/');
 $urlParams		= ltrim(substr($path, strpos($path, '?')), '?');
