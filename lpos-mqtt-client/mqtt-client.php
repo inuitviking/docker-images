@@ -64,9 +64,9 @@ try {
 
 		print_r($topic);
 
-		$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
-		$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $message)";
-		$update = "UPDATE bpm SET bpm=$message WHERE bed = ${topic[2]}";
+		$select = "SELECT bed FROM bpm WHERE bed = ${topic[3]}";
+		$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[3]}, $message)";
+		$update = "UPDATE bpm SET bpm=$message WHERE bed = ${topic[3]}";
 		$result = $db->query($select);
 
 		echo $result;
