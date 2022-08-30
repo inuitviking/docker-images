@@ -7,6 +7,8 @@ for ($i = 0; $i < 10; $i++) {
 }
 
 require_once 'vendor/autoload.php';
+require_once 'classes/Database.php';
+require_once 'classes/CRUD.php';
 
 // Objects
 use PhpMqtt\Client\MqttClient;
@@ -41,9 +43,8 @@ $dbuser		= 'Ahmoo';
 $dbpass		= '?&1Q%R>y[lHp,W6KABZy?%l)v#_^';
 $db		= 'infoscreen';
 
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-$mysqli = new mysqli($server ,$dbuser, $dbpass, $db)
-	or die('Error connecting to MySQL server.');
+$database = new Database($db, $dbuser, $dbpass, $dbserver);
+$bpmCrud = new Crud($database, 'bpm');
 
 // ***********
 // * PROGRAM *
@@ -59,10 +60,16 @@ try {
 		->setTlsCertificateAuthorityFile("certs/ca-root-cert.crt");				// Root certificate for the client and server certificate;					// Set client certificate key
 
 	$mqtt->connect($connectionSettings, true);															// Connect to the MQTT broker with the above connection settings and with a clean session.
-	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($db) {												// Recursively subscribe to hospital/
+	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($bpmCrud) {												// Recursively subscribe to hospital/
 		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
-		//		echo "\{$topic:$message}";
-		insertBPM($db, $topic, $message);
+		$topic = explode('/', $topic);
+		echo "Topic: ${$topic[3]}\n";
+		$bpms = $bpmCrud->Read(['*'], "WHERE bed = '${$topic[3]}'", 1);
+
+		foreach ($bpms as $bpm) {
+			print_r($bpm);
+		}
+
 	}, 0);																								// Set the QoS to 0
 
 	$mqtt->loop(true);																						// Continuously listen for messages
@@ -80,7 +87,7 @@ try {
 }
 
 
-function insertBPM ($db, string $topic, string $message): void {
+function insertBPM (string $topic, string $message): void {
 	$topic = explode('/', $topic);
 	$topic = array_filter($topic);
 
