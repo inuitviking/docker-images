@@ -86,9 +86,9 @@ function insertBPM ($db, string $topic, string $message): void {
 
 	print_r($topic);
 
-	$select = sprintf("SELECT bed FROM bpm WHERE bed = %s", $topic[3]);
-	$insert = sprintf("INSERT INTO bpm (bed, bpm) VALUES (%s, %s)", $topic[3], $message);
-	$update = sprintf("UPDATE bpm SET bpm=%s WHERE bed = %s", $message, $topic[3]);
+	$select = sprintf("SELECT bed FROM bpm WHERE bed = '%s'", $topic[3]);
+	$insert = sprintf("INSERT INTO bpm (bed, bpm) VALUES ('%s', '%s')", $topic[3], $message);
+	$update = sprintf("UPDATE bpm SET bpm='%s' WHERE bed = '%s'", $message, $topic[3]);
 
 	echo $select."\n";
 	echo $insert."\n";
