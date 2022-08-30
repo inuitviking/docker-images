@@ -1,7 +1,14 @@
 <?php
 
 echo "Sleep before doing anything. We want the other services to be ready.\n";
-sleep(10);
+for ($i = 0; $i < 10; $i++) {
+	if ($i == 10) {
+		echo ".\n";
+	} else {
+		echo ".";
+	}
+	sleep(1);
+}
 
 require_once 'vendor/autoload.php';
 
@@ -59,25 +66,7 @@ try {
 	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($db) {												// Recursively subscribe to hospital/
 		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
 		//		echo "\{$topic:$message}";
-
-		$topic = explode('/', $topic);
-
-		print_r($topic);
-
-		$select = "SELECT bed FROM bpm WHERE bed = ${topic[3]}";
-		$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[3]}, $message)";
-		$update = "UPDATE bpm SET bpm=$message WHERE bed = ${topic[3]}";
-		$result = $db->query($select);
-
-		echo $result;
-
-		if ($result) {
-			echo $db->query($insert);
-		}else {
-			echo $db->query($update);
-		}
-
-
+		insertBPM($db, $topic, $message);
 	}, 0);																								// Set the QoS to 0
 
 	$mqtt->loop(true);																						// Continuously listen for messages
@@ -95,16 +84,22 @@ try {
 }
 
 
-//function insertBPM ($db, string $topic, string $payload): void {
-//	$topic = explode('/', $topic);
-//	$select = "SELECT bed FROM bpm WHERE bed = ${topic[2]}";
-//	$insert = "INSERT INTO bpm (bed, bpm) VALUES (${topic[2]}, $payload)";
-//	$update = "UPDATE bpm SET bpm=$payload WHERE bed = ${topic[2]}";
-//	$result = $db->query($select);
-//
-//	if ($result) {
-//		$db->query($insert);
-//	}else {
-//		$db->query($update);
-//	}
-//}
+function insertBPM ($db, string $topic, string $message): void {
+	$topic = explode('/', $topic);
+	$topic = array_filter($topic);
+
+	print_r($topic);
+
+	$select = sprintf("SELECT bed FROM bpm WHERE bed = %s", $topic[3]);
+	$insert = sprintf("INSERT INTO bpm (bed, bpm) VALUES (%s, %s)", $topic[3], $message);
+	$update = sprintf("UPDATE bpm SET bpm=%s WHERE bed = %s", $message, $topic[3]);
+	$result = $db->query($select);
+
+	print_r($result);
+
+	if ($result) {
+		echo $db->query($insert);
+	}else {
+		echo $db->query($update);
+	}
+}
