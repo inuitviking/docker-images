@@ -64,10 +64,9 @@ try {
 		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
 		$topic = explode('/', $topic);
 		echo "Topic: ". $topic[3] . "\n";
-		$bpms = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[3] . "'", 1);
-
-		foreach ($bpms as $bpm) {
-			print_r($bpm);
+		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[3] . "'", 1);
+		if ($bpm == "" || $bpm == null || $bpm == false) {
+			echo "Nothing returned;";
 		}
 
 	}, 0);																								// Set the QoS to 0
