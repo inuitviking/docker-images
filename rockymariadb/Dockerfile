@@ -32,6 +32,7 @@ RUN microdnf upgrade --refresh -y; \
     microdnf install jemalloc jemalloc-devel pwgen tzdata xz xz-libs zstd -y; \
     microdnf install MariaDB-server MariaDB-client -y; \
     microdnf clean all
+COPY my.cnf /etc/my.cnf
 # Make an entrypoint directory; see https://github.com/MariaDB/mariadb-docker/blob/97e6715fb9f86010de510eef718f7341e3011c25/10.6/Dockerfile#L39
 RUN mkdir /docker-entrypoint-initdb.d
 # Make sure the necessary scripts are installed, see https://github.com/MariaDB/mariadb-docker/blob/97e6715fb9f86010de510eef718f7341e3011c25/10.6/Dockerfile#L127
