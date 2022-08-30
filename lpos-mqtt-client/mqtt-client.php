@@ -63,8 +63,8 @@ try {
 	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($bpmCrud) {												// Recursively subscribe to hospital/
 		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
 		$topic = explode('/', $topic);
-		echo "Topic: ${$topic[3]}\n";
-		$bpms = $bpmCrud->Read(['*'], "WHERE bed = '${$topic[3]}'", 1);
+		echo "Topic: ". $topic[3] . "\n";
+		$bpms = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[3] . "'", 1);
 
 		foreach ($bpms as $bpm) {
 			print_r($bpm);
