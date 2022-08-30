@@ -65,8 +65,14 @@ try {
 		$topic = explode('/', $topic);
 		echo "Topic: ". $topic[3] . "\n";
 		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[3] . "'", 1);
-		if ($bpm == "" || $bpm == null || $bpm == false) {
-			echo "Nothing returned;";
+		if ($bpm == "" || !$bpm) {
+			$bpmArray = [
+				'bed' => $topic[3],
+				'bpm' => $message
+			];
+			$bpmCrud->Create($bpmArray);
+		} else {
+			$bpmCrud->Update(['bpm' => $message], "bed = '".$topic[3]."'");
 		}
 
 	}, 0);																								// Set the QoS to 0
