@@ -63,18 +63,18 @@ try {
 		->setPassword($clientPass)																						// Set password
 		->setUseTls(true)																						// Use TLS
 		->setTlsSelfSignedAllowed(true)																// Allow self-signed certificates
-		->setTlsCertificateAuthorityFile("certs/ca-root-cert.crt");				// Root certificate for the client and server certificate;					// Set client certificate key
+		->setTlsCertificateAuthorityFile("certs/ca-root-cert.crt");							// Root certificate for the client and server certificate;					// Set client certificate key
 
 	$mqtt->connect($connectionSettings, true);															// Connect to the MQTT broker with the above connection settings and with a clean session.
-	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($bpmCrud) {												// Recursively subscribe to hospital/
-		file_put_contents('mqtt.csv', "$topic,$message", LOCK_EX);
-		$topic = explode('/', $topic);
-		echo "Topic: ". $topic[2] . "\n";
-		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[2] . "'", 1);
-		if ($bpm == "" || !$bpm) {
+
+	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($bpmCrud) {								// Recursively subscribe to hospital/
+
+		$topic = explode('/', $topic);																		// Explode the topic
+		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[2] . "'", 1);								// Check if the value exists in the db
+		if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 			$bpmCrud->Create(['bed' => $topic[3],'bpm' => $message]) . "\n";
 		} else {
-			$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[3]."'") . "\n";
+			$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
 		}
 
 	}, 0);																								// Set the QoS to 0
