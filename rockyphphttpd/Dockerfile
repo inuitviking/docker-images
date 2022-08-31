@@ -15,6 +15,7 @@ RUN microdnf install php php-fpm php-cli php-curl php-mysqlnd php-gd php-opcache
     php -v;
 RUN microdnf clean all
 COPY configs/www.conf /etc/php-fpm.d/www.conf
+COPY configs/php.ini /etc/php.ini
 RUN mkdir -p /run/php-fpm
 # Below fixes a default bug when installing mod_ssl: https://community.letsencrypt.org/t/localhost-crt-does-not-exist-or-is-empty/103979/2
 RUN /usr/libexec/httpd-ssl-gencerts; \
