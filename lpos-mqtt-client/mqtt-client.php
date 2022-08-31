@@ -40,7 +40,7 @@ use PhpMqtt\Client\Exceptions\RepositoryException;
  * - Skúli
  *   - 10.135.16.54
  */
-$server		= '192.168.80.12';
+$server		= '10.135.16.54';
 $port		= 8883;
 $clientId	= 'infoscreen';
 $clientPass	= '5k1nnyL4773';

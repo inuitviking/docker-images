@@ -20,7 +20,7 @@ require_once 'classes/CRUD.php';
  * - Skúli
  *   - 10.135.16.54
  */
-$dbserver	= '192.168.80.12';
+$dbserver	= '10.135.16.54';
 $dbuser		= 'Ahmoo';
 $dbpass		= '?&1Q%R>y[lHp,W6KABZy?%l)v#_^';
 $db			= 'infoscreen';
