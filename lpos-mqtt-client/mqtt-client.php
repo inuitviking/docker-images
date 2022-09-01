@@ -82,6 +82,10 @@ try {
 		}
 
 		if ($topic[1] == 'call') {
+			$message = match ($message) {
+				1 => true,
+				default => false,
+			};
 			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 				$bpmCrud->Create(['bed' => $topic[2],'call' => $message]) . "\n";
 			} else {
