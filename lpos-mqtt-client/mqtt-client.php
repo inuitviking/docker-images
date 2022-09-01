@@ -72,10 +72,21 @@ try {
 
 		$topic = explode('/', $topic);																		// Explode the topic
 		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[2] . "'", 1);								// Check if the value exists in the db
-		if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
-			$bpmCrud->Create(['bed' => $topic[3],'bpm' => $message]) . "\n";
-		} else {
-			$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
+
+		if ($topic[1] == 'bpm') {
+			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
+				$bpmCrud->Create(['bed' => $topic[2],'bpm' => $message]) . "\n";
+			} else {
+				$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
+			}
+		}
+
+		if ($topic[1] == 'call') {
+			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
+				$bpmCrud->Create(['bed' => $topic[2],'call' => $message]) . "\n";
+			} else {
+				$bpmCrud->Update(['call' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
+			}
 		}
 
 	}, 0);																								// Set the QoS to 0
