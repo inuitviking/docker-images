@@ -69,7 +69,7 @@ try {
 	$mqtt->connect($connectionSettings, true);															// Connect to the MQTT broker with the above connection settings and with a clean session.
 
 	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($bpmCrud) {								// Recursively subscribe to hospital/
-		echo $topic;
+		exec("echo $topic >&2");
 		$topic = explode('/', $topic);																		// Explode the topic
 		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[2] . "'", 1);								// Check if the value exists in the db
 
