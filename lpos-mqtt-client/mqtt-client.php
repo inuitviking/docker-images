@@ -80,10 +80,13 @@ try {
 				$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
 			}
 		} else if ($topic[1] == 'call') {
+			echo "We're in a call!";
 			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 				$bpmCrud->Create(['bed' => $topic[2],'call' => $message]) . "\n";
+				echo "Are we creating?";
 			} else {
 				$bpmCrud->Update(['call' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
+				echo "Or are we updating?";
 			}
 		}
 
