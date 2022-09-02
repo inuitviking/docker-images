@@ -74,14 +74,14 @@ try {
 		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[2] . "'", 1);								// Check if the value exists in the db
 
 		if ($topic[1] == 'bpm') {
-			exec("echo 'we're doing bpm' >&2");
+			exec("echo 'we are doing bpm' >&2");
 			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 				$bpmCrud->Create(['bed' => $topic[2],'bpm' => $message]) . "\n";
 			} else {
 				$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
 			}
 		} else if ($topic[1] == 'call') {
-			exec("echo 'We're doing a call' >&2");
+			exec("echo 'We are doing a call' >&2");
 			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 				$bpmCrud->Create(['bed' => $topic[2],'call' => $message]) . "\n";
 			} else {
