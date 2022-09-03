@@ -64,7 +64,7 @@ try {
 		->setPassword($clientPass)																						// Set password
 		->setUseTls(true)																						// Use TLS
 		->setTlsSelfSignedAllowed(true)																// Allow self-signed certificates
-		->setTlsCertificateAuthorityFile("certs/ca-heima.crt");							// Root certificate for the client and server certificate;					// Set client certificate key
+		->setTlsCertificateAuthorityFile("certs/ca-root-cert.crt");							// Root certificate for the client and server certificate;					// Set client certificate key
 
 	$mqtt->connect($connectionSettings, true);															// Connect to the MQTT broker with the above connection settings and with a clean session.
 
