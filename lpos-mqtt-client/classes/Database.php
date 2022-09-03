@@ -81,7 +81,7 @@ class Database {
 		$set = '';
 
 		foreach ($pColumns as $placeholder => $column){
-			$set .= "{$column}={$placeholder},";
+			$set .= "`{$column}`={$placeholder},";
 		}
 
 		$set = rtrim($set, ',');

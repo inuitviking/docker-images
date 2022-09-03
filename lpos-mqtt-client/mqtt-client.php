@@ -40,7 +40,7 @@ use PhpMqtt\Client\Exceptions\RepositoryException;
  * - Skúli
  *   - 10.135.16.54
  */
-$server		= '10.135.16.54';
+$server		= '192.168.1.222';
 $port		= 8883;
 $clientId	= 'infoscreen';
 $clientPass	= '5k1nnyL4773';
@@ -64,24 +64,21 @@ try {
 		->setPassword($clientPass)																						// Set password
 		->setUseTls(true)																						// Use TLS
 		->setTlsSelfSignedAllowed(true)																// Allow self-signed certificates
-		->setTlsCertificateAuthorityFile("certs/ca-root-cert.crt");							// Root certificate for the client and server certificate;					// Set client certificate key
+		->setTlsCertificateAuthorityFile("certs/ca-heima.crt");							// Root certificate for the client and server certificate;					// Set client certificate key
 
 	$mqtt->connect($connectionSettings, true);															// Connect to the MQTT broker with the above connection settings and with a clean session.
 
 	$mqtt->subscribe('hospital/#', function ($topic, $message) use ($bpmCrud) {								// Recursively subscribe to hospital/
-		exec("echo $topic >&2");
 		$topic = explode('/', $topic);																		// Explode the topic
 		$bpm = $bpmCrud->Read(['*'], "WHERE bed = '" . $topic[2] . "'", 1);								// Check if the value exists in the db
 
 		if ($topic[1] == 'bpm') {
-			exec("echo 'we are doing bpm' >&2");
 			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 				$bpmCrud->Create(['bed' => $topic[2],'bpm' => $message]) . "\n";
 			} else {
 				$bpmCrud->Update(['bpm' => $message], "WHERE bed = '".$topic[2]."'") . "\n";
 			}
 		} else if ($topic[1] == 'call') {
-			exec("echo 'We are doing a call' >&2");
 			if ($bpm == "" || !$bpm) {																						// If it does, update the entry; if not create the entry
 				$bpmCrud->Create(['bed' => $topic[2],'call' => $message]) . "\n";
 			} else {
